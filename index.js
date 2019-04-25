@@ -41,12 +41,13 @@ const processCities = () => {
       let indexInJson = ch.findInJSON(jsonKey, 'name', findBy, currentJSON)
       if (indexInJson === -1) {
         logMe('Element ' + findBy + ' does not exist')
-        logMe('adding new element for ' + jsonKey + ' : ' + findBy)
         let elem = ch.formNewElement(ch.colMapping['cities'], i, sheet)
         let idx = ch.sheetMapping[jsonKey].key
         let arrName = ch.sheetMapping[jsonKey].array
-        currentJSON[arrName][idx][jsonKey].push(ch.cityObj)
-
+        if (elem) {
+          logMe('adding new element for ' + jsonKey + ' : ' + findBy)
+          currentJSON[arrName][idx][jsonKey].push(elem)
+        }
       } else {
         logMe('Element ' + findBy + 'found and will be updated')
         gen.updateCurrentElement(ch.colMapping['cities'], indexInJson, i, sheet, name, ch.cityObj, ch.sheetMapping, currentJSON)

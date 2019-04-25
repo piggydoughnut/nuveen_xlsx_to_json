@@ -70,7 +70,16 @@ console.log(jsonKey)
 const formNewElement = (map, excelIndex, sheet) => {
   let copy = Object.assign({}, cityObj)
   for (let i in cityObj) {
-    copy[i] = sheet[map[i] + excelIndex] ? sheet[map[i] + excelIndex].v : ""
+    let val = sheet[map[i] + excelIndex]
+    if (val) {
+      if (val.v === '-') {
+        console.log('Ignoring')
+        return null
+      }
+      copy[i] = val.v
+    } else {
+      copy[i] = ""
+    }
   }
   console.log(copy)
   return copy
