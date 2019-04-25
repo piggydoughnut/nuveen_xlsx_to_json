@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const logMe = require('./settings').logMe
 
 const cityObj = {
   "name": "",
@@ -51,12 +52,11 @@ const colMapping = {
  * @return {[type]}         [description]
  */
 const findInJSON = (jsonKey, field, value, json) => {
-console.log(jsonKey)
   let idx = sheetMapping[jsonKey].key
   let arrName = sheetMapping[jsonKey].array
   let searchArea = json[arrName][idx][jsonKey]
 
-  console.log('(', jsonKey, ') Searching for', value, 'with field name', field)
+  logMe('(' + jsonKey + ') Searching for ' + value + ' in the field ' + field)
   return _.findIndex(searchArea, (obj, idx) =>  obj[field].toLowerCase() === value.toLowerCase())
 }
 
@@ -73,7 +73,7 @@ const formNewElement = (map, excelIndex, sheet) => {
     let val = sheet[map[i] + excelIndex]
     if (val) {
       if (val.v === '-') {
-        console.log('Ignoring')
+        logMe('Ignoring')
         return null
       }
       copy[i] = val.v

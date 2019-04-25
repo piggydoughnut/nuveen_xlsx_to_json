@@ -1,13 +1,13 @@
 var fs = require('fs'), tempfile = require('tempfile')
 var XLSX = require('xlsx')
-const currentJSON = require('./data/nuveen.json')
+const currentJSON = require('./data/updated.json')
 const _ = require('lodash')
 const ch = require('./helpers/cities')
 const gen = require('./helpers/general')
+const logMe = require('./helpers/settings').logMe
+const settings = require('./helpers/settings')
 
-var workbook = XLSX.readFile('./data/original.xlsx')
-const LOGGING = true
-const logMe = (msg) => LOGGING ? console.log(msg) : null
+var workbook = XLSX.readFile(settings.INPUT)
 // const sheetNames = workbook.SheetNames
 
 const citiesSheetNames = ['Europe', 'Asia', 'Americas']
@@ -22,9 +22,6 @@ const processCities = () => {
     logMe('Corresponding key in the JSON file:' + jsonKey)
 
     let sheet = workbook.Sheets[name]
-    let total = Object.keys(sheet).length
-
-    logMe('Total number of values: ' + total)
     const {nrows, ncols} = gen.getRowsColumns(sheet)
     logMe('Columns:' + ncols)
     logMe('Rows:' + nrows)
@@ -60,8 +57,11 @@ const processGraphs = () => {
 
 }
 
-
+console.log('Lets parse')
 processCities()
 
-// var fs = require('fs');
-// fs.writeFile('./nuveen.json', JSON.stringify(currentJSON), 'utf8', (err => logMe(err)))
+var fs = require('fs');
+fs.writeFile(settings.OUTPUT, JSON.stringify(currentJSON), 'utf8', err => {
+  err ? logMe(err) : null
+  console.log('Done')
+})

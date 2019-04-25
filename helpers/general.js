@@ -1,4 +1,5 @@
 var XLSX = require('xlsx')
+const logMe = require('./settings').logMe
 
 const sheetMap = {
   'Americas': 'america',
@@ -17,20 +18,28 @@ const getRowsColumns = (sheet) => {
   return {nrows, ncols}
 }
 
+/**
+ * [updateCurrentElement description]
+ * @param  {[type]} map          [description]
+ * @param  {[type]} updIdx       [description]
+ * @param  {[type]} xlsxIdx      [description]
+ * @param  {[type]} sheet        [description]
+ * @param  {[type]} sheetName    [description]
+ * @param  {[type]} sample       [description]
+ * @param  {[type]} sheetMapping [description]
+ * @param  {[type]} json         [description]
+ * @return {[type]}              [description]
+ */
 const updateCurrentElement = (map, updIdx, xlsxIdx, sheet, sheetName, sample, sheetMapping, json) => {
   sheetName = sheetMap[sheetName]
   let jsonIdx = sheetMapping[sheetName].key
   let arrName = sheetMapping[sheetName].array
-  // console.log('before---------')
-  // console.log(currentJSON[arrName][jsonIdx][jsonKey][indexToUpdate])
   for (let i in sample) {
     let value = sheet[map[i] + xlsxIdx] ? sheet[map[i] + xlsxIdx].v : null
     if (value) {
       json[arrName][jsonIdx][sheetName][updIdx][i] = value
     }
   }
-  // console.log('after----------')
-  // console.log(currentJSON[arrName][jsonIdx][jsonKey][indexToUpdate])
 }
 
 module.exports = {
