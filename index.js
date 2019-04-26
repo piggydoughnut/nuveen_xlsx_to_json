@@ -10,7 +10,7 @@ const graphs = require('./helpers/graphs')
 const currentJSON = require(settings.ORIGINAL_JSON)
 var workbook = XLSX.readFile(settings.INPUT)
 const citiesSheetNames = ['Europe', 'Asia', 'Americas']
-
+let areaMap = {}
 /**
  * Gets data for the GDP graph
  * @param  {String} jsonTitle graph title in json, key
@@ -106,6 +106,16 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
     }
     i++
   }
+  let label = graphs.labelMap[areaMap[lookFor]]
+  if (!currentJSON['graphs'][idx].graphGDPBreakdown) {
+    currentJSON['graphs'][idx].graphGDPBreakdown = {
+      series1Label: lookFor,
+      seriesData: []
+    }
+    if (label) {
+      currentJSON['graphs'][idx].graphGDPBreakdown.series2Label = label
+    }
+  }
   currentJSON['graphs'][idx].graphGDPBreakdown.seriesData.push(data)
 }
 
@@ -161,7 +171,6 @@ const processGraphs = () => {
       currentJSON['graphs'][resIdx].graphGDPBreakdown.series1Label = city
       currentJSON['graphs'][resIdx].graphGDPBreakdown.seriesData  = []
       processGDPBreakdownGraph(graphs.sheets.cityGDPBreakdown, city, resIdx)
-      console.log(currentJSON['graphs'][resIdx].graphGDPBreakdown)
       processGDPBreakdownGraph(graphs.sheets.countryGDPBreakdown, country, resIdx)
     }
   })
@@ -189,6 +198,7 @@ const processCities = () => {
       logMe('*****************************')
 
       let findBy = sheet['A' + i].v
+      areaMap[findBy] = name
       logMe('Processing ' + findBy + ' on the row ' + i)
       let indexInJson = ch.findInJSON(jsonKey, 'name', findBy, currentJSON)
       if (indexInJson === -1) {
@@ -199,7 +209,8 @@ const processCities = () => {
         if (elem) {
           logMe('adding new element for ' + jsonKey + ' : ' + findBy)
           currentJSON[arrName][idx][jsonKey].push(elem)
-          currentJSON['graphs'].push(graphs.makeNewGraphObject(findBy, jsonKey))
+          let obj = graphs.makeNewGraphObject(findBy, jsonKey)
+          currentJSON['graphs'].push({...obj})
         }
       } else {
         logMe('Element ' + findBy + 'found and will be updated')
@@ -222,5 +233,15 @@ const writetoJSON = () => {
 console.log('Lets parse')
 processCities()
 processGraphs()
+ // HACK:
+currentJSON['graphs'] =  currentJSON['graphs'].map((place, idx) => {
+   place.graphGDPBreakdown.series1Label = place.name
+   let label = graphs.labelMap[areaMap[place.name]]
+   if (label) {
+    place.graphGDPBreakdown.series2Label = label
+   }
+   return place
+})
 writetoJSON()
+
 console.log('Done')

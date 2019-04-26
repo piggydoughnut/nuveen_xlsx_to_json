@@ -19,40 +19,41 @@ const sheets = {
 }
 
 const labelMap = {
-  'europe': 'European cities average',
-  'america': '',
-  'asia': 'Asia-Pacific cities average'
+  'Europe': 'European cities average',
+  'Americas': '',
+  'Asia': 'Asia-Pacific cities average'
 }
+
 const sample = {
-    "name": "",
-		"graphAge": [],
-		"graphGDPGrowth": [{
-			"name": "City population",
-			"data": []
+    name: "",
+		graphAge: [],
+		graphGDPGrowth: [{
+			name: "City population",
+			data: []
 		}, {
-			"name": "City GDP",
-			"data": []
+			name: "City GDP",
+			data: []
 		}, {
-			"name": "City retail sales",
-			"data": []
+			name: "City retail sales",
+			data: []
 		}, {
-			"name": "Country population",
-			"data": [],
-			"dashStyle": "solid"
+			name: "Country population",
+			data: [],
+			dashStyle: "solid"
 		}, {
-			"name": "Country GDP",
-			"data": [],
-			"dashStyle": "solid"
+			name: "Country GDP",
+			data: [],
+			dashStyle: "solid"
 		}, {
-			"name": "Country retail sales",
-			"data": [],
-			"dashStyle": "solid"
+			name: "Country retail sales",
+			data: [],
+			dashStyle: "solid"
 		}],
-		"graphIncome": [],
-		"graphGDPBreakdown": {
-			"series1Label": "",
-			"series2Label": "European cities average",
-			"seriesData": []
+		graphIncome: [],
+		graphGDPBreakdown: {
+			series1Label: "",
+			series2Label: "",
+			seriesData: []
 		}
 }
 /**
@@ -88,7 +89,7 @@ const getTableKeyRowIndex = (sheet, tableKey) => {
   }
   if (res) {
     let number = res.match(/\d+/)[0]
-    logMe('Looking for ' + tableKey + ', found at key' + number)
+    logMe('Looking for ' + tableKey + ', found at key ' + number)
     return number
   }
   return null
@@ -122,9 +123,7 @@ const readDataSheet = (sheet, tableKey, rows, cols) => {
 
 const makeNewGraphObject = (city, area) => {
   let copy = Object.assign({}, sample)
-  copy.name = city
-  copy.graphGDPBreakdown.series1Label = city
-  copy.graphGDPBreakdown.series2Label = labelMap[area]
+  copy.name = city.slice(0)
   return copy
 }
 /**
