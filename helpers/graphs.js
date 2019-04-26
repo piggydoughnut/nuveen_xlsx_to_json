@@ -88,7 +88,7 @@ const getTableKeyRowIndex = (sheet, tableKey) => {
   }
   if (res) {
     let number = res.match(/\d+/)[0]
-    logMe('Looking for ' + tableKey + ', found at key' , number)
+    logMe('Looking for ' + tableKey + ', found at key' + number)
     return number
   }
   return null
