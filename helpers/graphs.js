@@ -18,6 +18,38 @@ const sheets = {
   countryGDPBreakdown: workbook.Sheets['Country GDP breakdown']
 }
 
+const sample = {
+    "name": "",
+		"graphAge": [],
+		"graphGDPGrowth": [{
+			"name": "City population",
+			"data": []
+		}, {
+			"name": "City GDP",
+			"data": []
+		}, {
+			"name": "City retail sales",
+			"data": []
+		}, {
+			"name": "Country population",
+			"data": [],
+			"dashStyle": "solid"
+		}, {
+			"name": "Country GDP",
+			"data": [],
+			"dashStyle": "solid"
+		}, {
+			"name": "Country retail sales",
+			"data": [],
+			"dashStyle": "solid"
+		}],
+		"graphIncome": [],
+		"graphGDPBreakdown": {
+			"series1Label": "",
+			"series2Label": "European cities average",
+			"seriesData": []
+		}
+}
 /**
  * Converts number to an alpha value
  * @param  {Number} num
@@ -83,6 +115,12 @@ const readDataSheet = (sheet, tableKey, rows, cols) => {
   return data
 }
 
+const makeNewGraphObject = (city) => {
+  let copy = Object.assign({}, sample)
+  copy.name = city
+  copy.graphGDPBreakdown.series1Label = city
+  return copy
+}
 /**
  * Retuns an index which refers to the position of the graph in the graphGDPGrowth array
  * @param  {String} name   name of the graph we are looking for
@@ -98,5 +136,6 @@ module.exports = {
   getTableKeyRowIndex,
   numToAlpha,
   sheets,
-  getIndexGDPGrowth
+  getIndexGDPGrowth,
+  makeNewGraphObject
 }

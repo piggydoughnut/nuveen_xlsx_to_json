@@ -22,7 +22,7 @@ const citiesSheetNames = ['Europe', 'Asia', 'Americas']
 const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
   logMe(jsonTitle)
   let gIndex = graphs.getIndexGDPGrowth(jsonTitle, result, currentJSON)
-  logMe('index', gIndex)
+  logMe('Index of the graph ' + jsonTitle + ' in the GDPGrowth array:'  + gIndex)
   let info = gen.getRowsColumns(sheet)
   logMe(info)
   let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
@@ -187,6 +187,8 @@ const processCities = () => {
         if (elem) {
           logMe('adding new element for ' + jsonKey + ' : ' + findBy)
           currentJSON[arrName][idx][jsonKey].push(elem)
+          console.log(graphs.makeNewGraphObject(findBy))
+          currentJSON['graphs'].push(graphs.makeNewGraphObject(findBy))
         }
       } else {
         logMe('Element ' + findBy + 'found and will be updated')
