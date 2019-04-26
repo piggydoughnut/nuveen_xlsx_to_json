@@ -42,8 +42,24 @@ const updateCurrentElement = (map, updIdx, xlsxIdx, sheet, sheetName, sample, sh
   }
 }
 
+const getAllCities = (workbook) => {
+  let cityPopSheet = workbook.Sheets['City pop']
+  let {nrows, ncols} = getRowsColumns(cityPopSheet)
+
+  let exclude = ['Americas', 'Asia Pacific', 'Europe']
+  let cities = []
+  for (let i = 3; i < nrows + 1; i++) {
+    let val = cityPopSheet['A' + i].v
+    if (exclude.indexOf(val) === -1) {
+      cities[val] = cityPopSheet['B' + i].v
+    }
+  }
+  return cities
+}
+
 module.exports = {
   getRowsColumns,
   updateCurrentElement,
-  sheetMap
+  sheetMap,
+  getAllCities
 }

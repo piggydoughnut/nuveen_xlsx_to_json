@@ -1,17 +1,18 @@
 var fs = require('fs'), tempfile = require('tempfile')
 var XLSX = require('xlsx')
-const currentJSON = require('./data/updated.json')
 const _ = require('lodash')
 const ch = require('./helpers/cities')
 const gen = require('./helpers/general')
 const logMe = require('./helpers/settings').logMe
 const settings = require('./helpers/settings')
+const currentJSON = require(settings.ORIGINAL_JSON)
+const graphs = require('./helpers/graphs')
 
 var workbook = XLSX.readFile(settings.INPUT)
-// const sheetNames = workbook.SheetNames
 
 const citiesSheetNames = ['Europe', 'Asia', 'Americas']
-
+// console.log(workbook.SheetNames)
+// process.exit()
 const processCities = () => {
 
   citiesSheetNames.forEach((name, idx) => {
@@ -21,19 +22,15 @@ const processCities = () => {
     logMe('Processing sheet name: ' + name)
     logMe('Corresponding key in the JSON file:' + jsonKey)
 
+
     let sheet = workbook.Sheets[name]
     const {nrows, ncols} = gen.getRowsColumns(sheet)
     logMe('Columns:' + ncols)
     logMe('Rows:' + nrows)
 
     for (let i = 2; i < nrows + 1; i ++) {
-      logMe('***')
-      logMe('Processing row ' + i)
+      logMe('****Processing row ' + i)
 
-      // for (let j in ch.colMapping['cities']) {
-      //   let colLetter = ch.colMapping['cities'][j]
-      //   logMe(colLetter + i, '(', j ,'):', sheet[colLetter + i].v)
-      // }
       let findBy = sheet['A' + i].v
       let indexInJson = ch.findInJSON(jsonKey, 'name', findBy, currentJSON)
       if (indexInJson === -1) {
@@ -53,12 +50,87 @@ const processCities = () => {
   })
 }
 
-const processGraphs = () => {
+const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
+  logMe(jsonTitle)
+  let gIndex = getIndexGDPGrowth(jsonTitle, result)
+  logMe('index', gIndex)
+  let info = gen.getRowsColumns(sheet)
+  logMe(info)
+  let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
+  if (gIndex !== -1) {
+    currentJSON['graphs'][result].graphGDPGrowth[gIndex].data  = data
+  } else {
+    logMe('--------- INSERTING')
+    currentJSON['graphs'][result].graphGDPGrowth.push({
+      data: data,
+      name: jsonTitle
+    })
+  }
+}
+
+const processIncomeGraph = () => {
 
 }
 
+const processGDPBreakdownGraph = () => {
+
+}
+
+const processAgeGraph = (title, sheet, lookFor, idx) => {
+  logMe(title)
+  let info = gen.getRowsColumns(sheet)
+  currentJSON['graphs'][idx].graphAge.push(graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols))
+}
+
+/**
+ * Retuns an index which refers to the position of the graph in the graphGDPGrowth array
+ * @param  {String} name   name of the graph we are looking for
+ * @param  {Number} result index of the city we are working with in the graphs array
+ * @return {Number}        index in array
+ */
+let getIndexGDPGrowth = (name, result) => {
+  return _.findIndex(currentJSON['graphs'][result].graphGDPGrowth, (obj) => obj.name.toLowerCase() === name.toLowerCase())
+}
+
+const processGraphs = () => {
+  let sheets = {
+    graphAgeCity: workbook.Sheets['City age structure'],
+    graphAgeCountry: workbook.Sheets['Country age structure'],
+    cityPopulation: workbook.Sheets['City pop'],
+    countryPopulation: workbook.Sheets['Country pop'],
+    countryGDP: workbook.Sheets['Country GDP'],
+    cityGDP: workbook.Sheets['City GDP'],
+    cityRetailSales: workbook.Sheets['City retail '],
+    countryRetailSales: workbook.Sheets['Country retail']
+  }
+
+  let cityObj = gen.getAllCities(workbook)
+  let cities = Object.keys(cityObj)
+  let arrayName = 'graphs'
+
+  cities.forEach(city => {
+    logMe('city', city)
+    let resIdx = _.findIndex(currentJSON['graphs'], {name: city})
+    // the city is present in the list
+    if (resIdx !== -1) {
+      let country = cityObj[city]
+      processAgeGraph('graphAgeCity', sheets.graphAgeCity, city, resIdx)
+      processAgeGraph('graphAgeCountry', sheets.graphAgeCountry, country, resIdx)
+      processGDPGraph('City Population', sheets.cityPopulation, city, resIdx)
+      processGDPGraph('Country Population', sheets.countryPopulation, country, resIdx)
+      processGDPGraph('Country GDP', sheets.countryGDP, country, resIdx)
+      processGDPGraph('City GDP', sheets.cityGDP, city, resIdx)
+      processGDPGraph('Country Retail Sales', sheets.countryRetailSales, country, resIdx)
+      processGDPGraph('City Retail Sales', sheets.cityRetailSales, city, resIdx)
+    }
+  })
+}
+
 console.log('Lets parse')
+
 processCities()
+processGraphs()
+
 
 var fs = require('fs');
 fs.writeFile(settings.OUTPUT, JSON.stringify(currentJSON), 'utf8', err => {
