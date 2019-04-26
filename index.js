@@ -91,6 +91,9 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
     let value = sheet[alpha + tableRowIndex] ? sheet[alpha + tableRowIndex].v : null
     if (value) {
       let key = sheet[alpha + '2'].v
+      if (settings.GDPBREAKDOWN_MULTIPLY_BY_100) {
+        value = value * 100
+      }
       data.push({
         name: key,
         y: value
