@@ -2,98 +2,23 @@
 const graphs = require('./helpers/graphs')
 const settings = require('./helpers/settings')
 const currentJSON = require(settings.OUTPUT)
+const gen = require('./helpers/general')
 const fs = require('fs')
+var XLSX = require('xlsx')
 
-const areaMap = { Amsterdam: 'Europe',
-  Ankara: 'Europe',
-  Antwerp: 'Europe',
-  Barcelona: 'Europe',
-  Birmingham: 'Europe',
-  Berlin: 'Europe',
-  Bilbao: 'Europe',
-  Bologna: 'Europe',
-  Bordeaux: 'Europe',
-  Bristol: 'Europe',
-  Brussels: 'Europe',
-  Bucharest: 'Europe',
-  Budapest: 'Europe',
-  Copenhagen: 'Europe',
-  Dublin: 'Europe',
-  Edinburgh: 'Europe',
-  Frankfurt: 'Europe',
-  Geneva: 'Europe',
-  Gothenburg: 'Europe',
-  Hamburg: 'Europe',
-  Helsinki: 'Europe',
-  Istanbul: 'Europe',
-  Leeds: 'Europe',
-  London: 'Europe',
-  Luxembourg: 'Europe',
-  Lyon: 'Europe',
-  Madrid: 'Europe',
-  Manchester: 'Europe',
-  Milan: 'Europe',
-  Munich: 'Europe',
-  Oslo: 'Europe',
-  Paris: 'Europe',
-  Prague: 'Europe',
-  Rome: 'Europe',
-  Sofia: 'Europe',
-  Stockholm: 'Europe',
-  Stuttgart: 'Europe',
-  'The Hague': 'Europe',
-  Toulouse: 'Europe',
-  Vienna: 'Europe',
-  Warsaw: 'Europe',
-  Zurich: 'Europe',
-  Adelaide: 'Asia',
-  Auckland: 'Asia',
-  Beijing: 'Asia',
-  Brisbane: 'Asia',
-  Canberra: 'Asia',
-  Guangzhou: 'Asia',
-  'Hong Kong': 'Asia',
-  Melbourne: 'Asia',
-  Nagoya: 'Asia',
-  Osaka: 'Asia',
-  Perth: 'Asia',
-  Seoul: 'Asia',
-  Shanghai: 'Asia',
-  Shenzhen: 'Asia',
-  Singapore: 'Asia',
-  Sydney: 'Asia',
-  Tokyo: 'Asia',
-  Austin: 'Americas',
-  Boston: 'Americas',
-  Charlotte: 'Americas',
-  Chicago: 'Americas',
-  Dallas: 'Americas',
-  Denver: 'Americas',
-  Honolulu: 'Americas',
-  Houston: 'Americas',
-  'Las Vegas': 'Americas',
-  'Los Angeles': 'Americas',
-  Miami: 'Americas',
-  Minneapolis: 'Americas',
-  Nashville: 'Americas',
-  'New York': 'Americas',
-  Orlando: 'Americas',
-  Philadelphia: 'Americas',
-  Phoenix: 'Americas',
-  Portland: 'Americas',
-  Riverside: 'Americas',
-  Sacramento: 'Americas',
-  'Salt Lake City': 'Americas',
-  'San Antonio': 'Americas',
-  'San Diego': 'Americas',
-  'San Francisco': 'Americas',
-  'San Jose': 'Americas',
-  Seattle: 'Americas',
-  Tampa: 'Americas',
-  Toronto: 'Americas',
-  Vancouver: 'Americas',
-  Washington: 'Americas' }
+var workbook = XLSX.readFile(settings.INPUT)
+const citiesSheetNames = ['Europe', 'Asia', 'Americas']
+let areaMap = {}
+citiesSheetNames.forEach((name, idx) => {
+  let sheet = workbook.Sheets[name]
+  const {nrows, ncols} = gen.getRowsColumns(sheet)
+  for (let i = 2; i < nrows + 1; i ++) {
+    let findBy = sheet['A' + i].v
+    areaMap[findBy] = name
+  }
+})
 
+console.log(areaMap)
 /**
  * Save output to JSON
  */
