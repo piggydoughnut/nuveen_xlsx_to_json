@@ -109,7 +109,10 @@ const processAgeGraph = (title, sheet, lookFor, idx) => {
   if (!data) {
     return
   }
-  currentJSON['graphs'][idx].graphAge.push(data)
+  currentJSON['graphs'][idx].graphAge.push({
+    name: lookFor,
+    data: data
+  })
 }
 
 /**
@@ -126,6 +129,7 @@ const processGraphs = () => {
     // the city is present in the list
     if (resIdx !== -1) {
       let country = cityObj[city]
+      currentJSON['graphs'][resIdx].graphAge = []
       processAgeGraph('graphAgeCity', graphs.sheets.graphAgeCity, city, resIdx)
       processAgeGraph('graphAgeCountry', graphs.sheets.graphAgeCountry, country, resIdx)
       processGDPGraph('City Population', graphs.sheets.cityPopulation, city, resIdx)
