@@ -11,6 +11,14 @@ const currentJSON = require(settings.ORIGINAL_JSON)
 var workbook = XLSX.readFile(settings.INPUT)
 const citiesSheetNames = ['Europe', 'Asia', 'Americas']
 
+/**
+ * Gets data for the GDP graph
+ * @param  {String} jsonTitle graph title in json, key
+ * @param  {XLSX}   sheet     work sheet
+ * @param  {String} lookFor   city or country we are filling in for
+ * @param  {Number} result    index in the graphs json array
+ * @return {[type]}
+ */
 const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
   logMe(jsonTitle)
   let gIndex = graphs.getIndexGDPGrowth(jsonTitle, result, currentJSON)
@@ -32,6 +40,13 @@ const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
   }
 }
 
+/**
+ * gets and sets data for the Income graph
+ * @param  {XLSX}   sheet   worksheet
+ * @param  {String} lookFor city or country to look for
+ * @param  {Number} idx     graph array idx
+ * @return
+ */
 const processIncomeGraph = (sheet, lookFor, idx) => {
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
   let i = 2 // starts at C
@@ -52,6 +67,13 @@ const processIncomeGraph = (sheet, lookFor, idx) => {
   currentJSON['graphs'][idx].graphIncome = data
 }
 
+/**
+ * Process the GDP breakdown graphs
+ * @param  {XLSX}   sheet   worksheet
+ * @param  {String} lookFor city or country
+ * @param  {Number} idx     index in the graphs array
+ * @return
+ */
 const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
   let i = 2 // starts at C
@@ -72,6 +94,14 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
   currentJSON['graphs'][idx].graphGDPBreakdown.seriesData.push(data)
 }
 
+/**
+ * process the age graphs
+ * @param  {String} title   graph title, json key
+ * @param  {XLSX}   sheet   worksheet
+ * @param  {String} lookFor city or country
+ * @param  {Number} idx     index in the graphs array
+ * @return
+ */
 const processAgeGraph = (title, sheet, lookFor, idx) => {
   logMe(title)
   let info = gen.getRowsColumns(sheet)
@@ -82,6 +112,9 @@ const processAgeGraph = (title, sheet, lookFor, idx) => {
   currentJSON['graphs'][idx].graphAge.push(data)
 }
 
+/**
+ * process Graphs
+ */
 const processGraphs = () => {
   let cityObj = gen.getAllCities(workbook)
   let cities = Object.keys(cityObj)
@@ -110,10 +143,13 @@ const processGraphs = () => {
   })
 }
 
+/**
+ * Process Cities
+ */
 const processCities = () => {
 
   citiesSheetNames.forEach((name, idx) => {
-    let jsonKey = gen.sheetMap[name]
+    let jsonKey = ch.sheetMap[name]
 
     logMe('--------- --------- --------- ')
     logMe('Processing sheet name: ' + name)
@@ -140,16 +176,18 @@ const processCities = () => {
         }
       } else {
         logMe('Element ' + findBy + 'found and will be updated')
-        gen.updateCurrentElement(ch.colMapping['cities'], indexInJson, i, sheet, name, ch.cityObj, ch.sheetMapping, currentJSON)
+        ch.updateCurrentElement(indexInJson, i, sheet, name, currentJSON)
       }
     }
   })
 }
 
+/**
+ * Save output to JSON
+ */
 const writetoJSON = () => {
   fs.writeFile(settings.OUTPUT, JSON.stringify(currentJSON), 'utf8', err => {
     err ? logMe(err) : null
-    console.log('Done')
   })
 
 }
@@ -158,3 +196,4 @@ console.log('Lets parse')
 processCities()
 processGraphs()
 writetoJSON()
+console.log('Done')

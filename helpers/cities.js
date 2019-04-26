@@ -1,7 +1,13 @@
 const _ = require('lodash')
 const logMe = require('./settings').logMe
 
-const cityObj = {
+const sheetMap = {
+  'Americas': 'america',
+  'Asia': 'asia',
+  'Europe': 'europe'
+}
+
+const sample = {
   "name": "",
   "marker": "",
   "video": "",
@@ -32,6 +38,7 @@ const sheetMapping = {
     key: '2'
   }
 }
+
 const colMapping = {
   'cities': {
     'name': 'A',
@@ -45,11 +52,11 @@ const colMapping = {
 }
 
 /**
- * [findInJSON description]
- * @param  {[type]} jsonKey [description]
- * @param  {[type]} field   [description]
- * @param  {[type]} value   [description]
- * @return {[type]}         [description]
+ * Looks for the value
+ * @param  {String} jsonKey  object key for the given sheet
+ * @param  {String} field    field name
+ * @param  {String} value    field value
+ * @return {Number}          index
  */
 const findInJSON = (jsonKey, field, value, json) => {
   let idx = sheetMapping[jsonKey].key
@@ -61,15 +68,15 @@ const findInJSON = (jsonKey, field, value, json) => {
 }
 
 /**
- * [formNewElement description]
- * @param  {[type]} colMapping [description]
- * @param  {[type]} excelIndex [description]
- * @param  {[type]} sheet      [description]
- * @return {[type]}            [description]
+ * Creates a new element to insert in the cities json array
+ * @param  {Object} map        field mapping from keys to excel row alphas
+ * @param  {Number} excelIndex  row index
+ * @param  {XLSX}   sheet       excel workbook
+ * @return {Object}
  */
 const formNewElement = (map, excelIndex, sheet) => {
-  let copy = Object.assign({}, cityObj)
-  for (let i in cityObj) {
+  let copy = Object.assign({}, sample)
+  for (let i in sample) {
     let val = sheet[map[i] + excelIndex]
     if (val) {
       if (val.v === '-') {
@@ -81,14 +88,37 @@ const formNewElement = (map, excelIndex, sheet) => {
       copy[i] = ""
     }
   }
-  console.log(copy)
   return copy
 }
 
+
+/**
+ * Update the given city element in json
+ * @param  {Number} updIdx       index in the json array to update
+ * @param  {Number} xlsxIdx      index in the excel sheet
+ * @param  {XLSX}   sheet        xlsx worksheet
+ * @param  {String} sheetName    name of the sheet
+ * @param  {[type]} json         json file contents
+ * @return
+ */
+const updateCurrentElement = (updIdx, xlsxIdx, sheet, sheetName, json) => {
+  let map = colMapping['cities']
+  sheetName = sheetMap[sheetName]
+  let jsonIdx = sheetMapping[sheetName].key
+  let arrName = sheetMapping[sheetName].array
+  for (let i in sample) {
+    let value = sheet[map[i] + xlsxIdx] ? sheet[map[i] + xlsxIdx].v : null
+    if (value) {
+      json[arrName][jsonIdx][sheetName][updIdx][i] = value
+    }
+  }
+}
+
 module.exports = {
-  cityObj,
   sheetMapping,
   colMapping,
   findInJSON,
-  formNewElement
+  formNewElement,
+  updateCurrentElement,
+  sheetMap
 }
