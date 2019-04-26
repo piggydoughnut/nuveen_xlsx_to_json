@@ -13,8 +13,8 @@ const sample = {
   "video": "",
   "type": "",
   "pixelLocation":{
-    "x": "",
-    "y": ""
+    "x": "0",
+    "y": "0"
   },
   "population": "",
   "lifeScore": "",
@@ -84,8 +84,6 @@ const formNewElement = (map, excelIndex, sheet) => {
         return null
       }
       copy[i] = val.v + ""
-    } else {
-      copy[i] = ""
     }
   }
   return copy

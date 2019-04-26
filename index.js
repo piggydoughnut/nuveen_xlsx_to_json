@@ -109,7 +109,7 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
   let label = graphs.labelMap[areaMap[lookFor]]
   if (!currentJSON['graphs'][idx].graphGDPBreakdown) {
     currentJSON['graphs'][idx].graphGDPBreakdown = {
-      series1Label: lookFor,
+      series1Label: lookFor.slice(0),
       seriesData: []
     }
     if (label) {
@@ -227,21 +227,9 @@ const writetoJSON = () => {
   fs.writeFile(settings.OUTPUT, JSON.stringify(currentJSON), 'utf8', err => {
     err ? logMe(err) : null
   })
-
 }
 
 console.log('Lets parse')
 processCities()
 processGraphs()
- // HACK:
-currentJSON['graphs'] =  currentJSON['graphs'].map((place, idx) => {
-   place.graphGDPBreakdown.series1Label = place.name
-   let label = graphs.labelMap[areaMap[place.name]]
-   if (label) {
-    place.graphGDPBreakdown.series2Label = label
-   }
-   return place
-})
 writetoJSON()
-
-console.log('Done')
