@@ -57,6 +57,9 @@ const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
   let info = gen.getRowsColumns(sheet)
   logMe(info)
   let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
+  if (!data) {
+    return
+  }
   if (gIndex !== -1) {
     currentJSON['graphs'][result].graphGDPGrowth[gIndex].data  = data
   } else {
@@ -68,18 +71,54 @@ const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
   }
 }
 
-const processIncomeGraph = () => {
-
+const processIncomeGraph = (sheet, lookFor, idx) => {
+  let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
+  let i = 2 // starts at C
+  let data = {}
+  let info = gen.getRowsColumns(sheet)
+  while (i < info.ncols) {
+    let alpha = graphs.numToAlpha(i)
+    let value = sheet[alpha + tableRowIndex] ? sheet[alpha + tableRowIndex].v : null
+    if (value) {
+      let key = sheet[alpha + '2'].v
+      if (!data[key]) {
+        data[key] = []
+      }
+      data[key].push(value)
+    }
+    i++
+  }
+  currentJSON['graphs'][idx].graphIncome = data
 }
 
-const processGDPBreakdownGraph = () => {
-
+const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
+  let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
+  let i = 2 // starts at C
+  let data = []
+  let info = gen.getRowsColumns(sheet)
+  while (i < info.ncols) {
+    let alpha = graphs.numToAlpha(i)
+    let value = sheet[alpha + tableRowIndex] ? sheet[alpha + tableRowIndex].v : null
+    if (value) {
+      let key = sheet[alpha + '2'].v
+      data.push({
+        name: key,
+        y: value
+      })
+    }
+    i++
+  }
+  currentJSON['graphs'][idx].graphGDPBreakdown.seriesData.push(data)
 }
 
 const processAgeGraph = (title, sheet, lookFor, idx) => {
   logMe(title)
   let info = gen.getRowsColumns(sheet)
-  currentJSON['graphs'][idx].graphAge.push(graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols))
+  let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
+  if (!data) {
+    return
+  }
+  currentJSON['graphs'][idx].graphAge.push(data)
 }
 
 /**
@@ -91,18 +130,21 @@ const processAgeGraph = (title, sheet, lookFor, idx) => {
 let getIndexGDPGrowth = (name, result) => {
   return _.findIndex(currentJSON['graphs'][result].graphGDPGrowth, (obj) => obj.name.toLowerCase() === name.toLowerCase())
 }
-
+let sheets = {
+  graphAgeCity: workbook.Sheets['City age structure'],
+  graphAgeCountry: workbook.Sheets['Country age structure'],
+  cityPopulation: workbook.Sheets['City pop'],
+  countryPopulation: workbook.Sheets['Country pop'],
+  countryGDP: workbook.Sheets['Country GDP'],
+  cityGDP: workbook.Sheets['City GDP'],
+  cityRetailSales: workbook.Sheets['City retail '],
+  countryRetailSales: workbook.Sheets['Country retail'],
+  income: workbook.Sheets['Distribution of income'],
+  cityGDPBreakdown: workbook.Sheets['City GDP breakdown'],
+  countryGDPBreakdown: workbook.Sheets['Country GDP breakdown']
+}
 const processGraphs = () => {
-  let sheets = {
-    graphAgeCity: workbook.Sheets['City age structure'],
-    graphAgeCountry: workbook.Sheets['Country age structure'],
-    cityPopulation: workbook.Sheets['City pop'],
-    countryPopulation: workbook.Sheets['Country pop'],
-    countryGDP: workbook.Sheets['Country GDP'],
-    cityGDP: workbook.Sheets['City GDP'],
-    cityRetailSales: workbook.Sheets['City retail '],
-    countryRetailSales: workbook.Sheets['Country retail']
-  }
+
 
   let cityObj = gen.getAllCities(workbook)
   let cities = Object.keys(cityObj)
@@ -122,6 +164,11 @@ const processGraphs = () => {
       processGDPGraph('City GDP', sheets.cityGDP, city, resIdx)
       processGDPGraph('Country Retail Sales', sheets.countryRetailSales, country, resIdx)
       processGDPGraph('City Retail Sales', sheets.cityRetailSales, city, resIdx)
+      processIncomeGraph(sheets.income, city, resIdx)
+
+      currentJSON['graphs'][resIdx].graphGDPBreakdown.seriesData  = []
+      processGDPBreakdownGraph(sheets.cityGDPBreakdown, city, resIdx)
+      processGDPBreakdownGraph(sheets.countryGDPBreakdown, country, resIdx)
     }
   })
 }
@@ -130,7 +177,6 @@ console.log('Lets parse')
 
 processCities()
 processGraphs()
-
 
 var fs = require('fs');
 fs.writeFile(settings.OUTPUT, JSON.stringify(currentJSON), 'utf8', err => {

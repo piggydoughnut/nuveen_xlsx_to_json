@@ -65,11 +65,29 @@ function numToAlpha(num) {
   return alpha;
 }
 
-const readDataSheet = (sheet, tableKey, rows, cols) => {
-  // console.log(sheet)
+const exceptions = {
+  'Hong Kong': 'Hong Kong, China'
+}
+
+const getTableKeyRowIndex = (sheet, tableKey) => {
+  console.log(tableKey)
   let res = _.findKey(sheet, {v: tableKey})
-  let number = res.match(/\d+/)[0]
-  console.log('Looking for ' + tableKey + ', found at key' , number)
+  if (!res && exceptions[tableKey]) {
+    res = _.findKey(sheet, {v: exceptions[tableKey]})
+  }
+  if (res) {
+    let number = res.match(/\d+/)[0]
+    console.log('Looking for ' + tableKey + ', found at key' , number)
+    return number
+  }
+  return null
+}
+
+const readDataSheet = (sheet, tableKey, rows, cols) => {
+  let number = getTableKeyRowIndex(sheet, tableKey)
+  if (!number) {
+    return null
+  }
   let i = 2 // starts at C
   let data = []
   while (i < cols) {
@@ -80,11 +98,12 @@ const readDataSheet = (sheet, tableKey, rows, cols) => {
     }
     i++
   }
-  // console.log(data)
   return data
 
 }
 
 module.exports = {
-  readDataSheet
+  readDataSheet,
+  getTableKeyRowIndex,
+  numToAlpha
 }
