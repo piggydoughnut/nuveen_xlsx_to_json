@@ -6,6 +6,7 @@ const sheetMap = {
   'Asia': 'asia',
   'Europe': 'europe'
 }
+
 /**
  * Rows and columns for the given workSheet
  * @param  {[XLSX]}         sheet workSheet
