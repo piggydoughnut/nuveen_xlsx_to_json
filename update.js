@@ -18,7 +18,6 @@ citiesSheetNames.forEach((name, idx) => {
   }
 })
 
-console.log(areaMap)
 /**
  * Save output to JSON
  */
@@ -30,8 +29,6 @@ const writetoJSON = () => {
 }
 console.log('Updating the series1Label values and series2Label values')
 currentJSON['graphs'] =  currentJSON['graphs'].map((place, idx) => {
-  // console.log(place.name)
-  // console.log(place.graphGDPBreakdown.series1Label)
    place.graphGDPBreakdown.series1Label = place.name
    let label = graphs.labelMap[areaMap[place.name]]
    if (label) {
