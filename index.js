@@ -20,11 +20,11 @@ const citiesSheetNames = ['Europe', 'Asia', 'Americas']
  * @return {[type]}
  */
 const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
-  logMe(jsonTitle)
+  logMe('---')
+  logMe('Processing GDP Graph for ' + lookFor)
   let gIndex = graphs.getIndexGDPGrowth(jsonTitle, result, currentJSON)
   logMe('Index of the graph ' + jsonTitle + ' in the GDPGrowth array:'  + gIndex)
   let info = gen.getRowsColumns(sheet)
-  logMe(info)
   let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
   if (!data) {
     return
@@ -32,7 +32,6 @@ const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
   if (gIndex !== -1) {
     currentJSON['graphs'][result].graphGDPGrowth[gIndex].data  = data
   } else {
-    logMe('--------- INSERTING')
     currentJSON['graphs'][result].graphGDPGrowth.push({
       data: data,
       name: jsonTitle
@@ -48,6 +47,8 @@ const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
  * @return
  */
 const processIncomeGraph = (sheet, lookFor, idx) => {
+  logMe('---')
+  logMe('Processing Income Graph for ' + lookFor)
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
   let info = gen.getRowsColumns(sheet)
   let i = info.ncols // starts at C
@@ -82,6 +83,8 @@ const processIncomeGraph = (sheet, lookFor, idx) => {
  * @return
  */
 const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
+  logMe('---')
+  logMe('Processing GDP Breakdown Graph for ' + lookFor)
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
   let i = 2 // starts at C
   let data = []
@@ -113,7 +116,8 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
  * @return
  */
 const processAgeGraph = (title, sheet, lookFor, idx) => {
-  logMe(title)
+  logMe('---')
+  logMe('Processing Age Graph for ' + lookFor)
   let info = gen.getRowsColumns(sheet)
   let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
   if (!data) {
@@ -134,11 +138,13 @@ const processGraphs = () => {
   let arrayName = 'graphs'
 
   cities.forEach(city => {
-    logMe('city', city)
     let resIdx = _.findIndex(currentJSON['graphs'], {name: city})
     // the city is present in the list
     if (resIdx !== -1) {
       let country = cityObj[city]
+      logMe("\n")
+      logMe('***************************** ')
+      logMe('Processing city ' + city + ' and country ' + country)
       currentJSON['graphs'][resIdx].graphAge = []
       processAgeGraph('graphAgeCity', graphs.sheets.graphAgeCity, city, resIdx)
       processAgeGraph('graphAgeCountry', graphs.sheets.graphAgeCountry, country, resIdx)
@@ -176,9 +182,11 @@ const processCities = () => {
     logMe('Rows:' + nrows)
 
     for (let i = 2; i < nrows + 1; i ++) {
-      logMe('****Processing row ' + i)
+      logMe("\n")
+      logMe('*****************************')
 
       let findBy = sheet['A' + i].v
+      logMe('Processing ' + findBy + ' on the row ' + i)
       let indexInJson = ch.findInJSON(jsonKey, 'name', findBy, currentJSON)
       if (indexInJson === -1) {
         logMe('Element ' + findBy + ' does not exist')
