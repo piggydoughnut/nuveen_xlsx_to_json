@@ -1,4 +1,4 @@
-const LOGGING = true
+const LOGGING = false
 
 module.exports = {
   logMe: (msg) => LOGGING ? console.log(msg) : null,

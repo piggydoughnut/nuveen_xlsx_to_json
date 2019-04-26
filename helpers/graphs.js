@@ -2,6 +2,7 @@ const XLSX = require('xlsx')
 const _ = require('lodash')
 const settings = require('./settings')
 const workbook = XLSX.readFile(settings.INPUT)
+const logMe = require('./settings').logMe
 
 const sheets = {
   graphAgeCity: workbook.Sheets['City age structure'],
@@ -44,14 +45,13 @@ const exceptions = {
  * @return {Number}          index
  */
 const getTableKeyRowIndex = (sheet, tableKey) => {
-  console.log(tableKey)
   let res = _.findKey(sheet, {v: tableKey})
   if (!res && exceptions[tableKey]) {
     res = _.findKey(sheet, {v: exceptions[tableKey]})
   }
   if (res) {
     let number = res.match(/\d+/)[0]
-    console.log('Looking for ' + tableKey + ', found at key' , number)
+    logMe('Looking for ' + tableKey + ', found at key' , number)
     return number
   }
   return null
