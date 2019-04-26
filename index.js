@@ -49,10 +49,10 @@ const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
  */
 const processIncomeGraph = (sheet, lookFor, idx) => {
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
-  let i = 2 // starts at C
-  let data = {}
   let info = gen.getRowsColumns(sheet)
-  while (i < info.ncols) {
+  let i = info.ncols // starts at C
+  let data = {}
+  while (i > 1) {
     let alpha = graphs.numToAlpha(i)
     let value = sheet[alpha + tableRowIndex] ? sheet[alpha + tableRowIndex].v : null
     if (value) {
@@ -62,7 +62,7 @@ const processIncomeGraph = (sheet, lookFor, idx) => {
       }
       data[key].push(value)
     }
-    i++
+    i--
   }
   let result = []
   for (let k in data) {
