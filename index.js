@@ -153,7 +153,6 @@ const processGraphs = () => {
       currentJSON['graphs'][resIdx].graphGDPBreakdown.series1Label = city
       currentJSON['graphs'][resIdx].graphGDPBreakdown.seriesData  = []
       processGDPBreakdownGraph(graphs.sheets.cityGDPBreakdown, city, resIdx)
-      console.log(currentJSON['graphs'][resIdx].graphGDPBreakdown)
       processGDPBreakdownGraph(graphs.sheets.countryGDPBreakdown, country, resIdx)
     }
   })
