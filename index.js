@@ -64,7 +64,14 @@ const processIncomeGraph = (sheet, lookFor, idx) => {
     }
     i++
   }
-  currentJSON['graphs'][idx].graphIncome = data
+  let result = []
+  for (let k in data) {
+    result.push({
+      name: k,
+      data: data[k]
+    })
+  }
+  currentJSON['graphs'][idx].graphIncome = result
 }
 
 /**
