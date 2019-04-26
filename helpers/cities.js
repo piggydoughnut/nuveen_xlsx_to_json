@@ -83,7 +83,7 @@ const formNewElement = (map, excelIndex, sheet) => {
         logMe('Ignoring')
         return null
       }
-      copy[i] = val.v
+      copy[i] = val.v + ""
     } else {
       copy[i] = ""
     }
@@ -109,7 +109,7 @@ const updateCurrentElement = (updIdx, xlsxIdx, sheet, sheetName, json) => {
   for (let i in sample) {
     let value = sheet[map[i] + xlsxIdx] ? sheet[map[i] + xlsxIdx].v : null
     if (value) {
-      json[arrName][jsonIdx][sheetName][updIdx][i] = value
+      json[arrName][jsonIdx][sheetName][updIdx][i] = value + ""
     }
   }
 }
