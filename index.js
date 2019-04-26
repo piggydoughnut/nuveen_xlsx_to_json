@@ -150,8 +150,10 @@ const processGraphs = () => {
       processGDPGraph('City Retail Sales', graphs.sheets.cityRetailSales, city, resIdx)
       processIncomeGraph(graphs.sheets.income, city, resIdx)
 
+      currentJSON['graphs'][resIdx].graphGDPBreakdown.series1Label = city
       currentJSON['graphs'][resIdx].graphGDPBreakdown.seriesData  = []
       processGDPBreakdownGraph(graphs.sheets.cityGDPBreakdown, city, resIdx)
+      console.log(currentJSON['graphs'][resIdx].graphGDPBreakdown)
       processGDPBreakdownGraph(graphs.sheets.countryGDPBreakdown, country, resIdx)
     }
   })
@@ -187,8 +189,7 @@ const processCities = () => {
         if (elem) {
           logMe('adding new element for ' + jsonKey + ' : ' + findBy)
           currentJSON[arrName][idx][jsonKey].push(elem)
-          console.log(graphs.makeNewGraphObject(findBy))
-          currentJSON['graphs'].push(graphs.makeNewGraphObject(findBy))
+          currentJSON['graphs'].push(graphs.makeNewGraphObject(findBy, jsonKey))
         }
       } else {
         logMe('Element ' + findBy + 'found and will be updated')

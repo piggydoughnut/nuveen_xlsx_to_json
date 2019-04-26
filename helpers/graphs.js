@@ -18,6 +18,11 @@ const sheets = {
   countryGDPBreakdown: workbook.Sheets['Country GDP breakdown']
 }
 
+const labelMap = {
+  'europe': 'European cities average',
+  'america': '',
+  'asia': 'Asia-Pacific cities average'
+}
 const sample = {
     "name": "",
 		"graphAge": [],
@@ -115,10 +120,11 @@ const readDataSheet = (sheet, tableKey, rows, cols) => {
   return data
 }
 
-const makeNewGraphObject = (city) => {
+const makeNewGraphObject = (city, area) => {
   let copy = Object.assign({}, sample)
   copy.name = city
   copy.graphGDPBreakdown.series1Label = city
+  copy.graphGDPBreakdown.series2Label = labelMap[area]
   return copy
 }
 /**
@@ -137,5 +143,6 @@ module.exports = {
   numToAlpha,
   sheets,
   getIndexGDPGrowth,
-  makeNewGraphObject
+  makeNewGraphObject,
+  labelMap
 }
