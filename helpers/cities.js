@@ -70,6 +70,13 @@ const findInJSON = (jsonKey, field, value, json) => {
   return _.findIndex(searchArea, (obj, idx) =>  obj[field].toLowerCase() === value.toLowerCase())
 }
 
+const getPixelLocation = (sheet, excelIndex) => {
+  return {
+    x: sheet[coords['x'] + excelIndex].v + "",
+    y: sheet[coords['y'] + excelIndex].v + ""
+  }
+}
+
 /**
  * Creates a new element to insert in the cities json array
  * @param  {Object} map        field mapping from keys to excel row alphas
@@ -80,19 +87,12 @@ const findInJSON = (jsonKey, field, value, json) => {
 const formNewElement = (excelIndex, sheet) => {
   let copy = Object.assign({}, sample)
   for (let i in sample) {
-    let val = sheet[colMapping[i] + excelIndex]
-    if (val) {
-      if (val.v === '-') {
-        logMe('Ignoring')
-        return null
-      }
-      if (i === 'pixelLocation') {
-        copy['pixelLocation'] = {
-          x: sheet[coords['x'] + excelIndex].v + "",
-          y: sheet[coords['y'] + excelIndex].v + ""
-        }
+    let value = sheet[colMapping[i] + excelIndex] ? sheet[colMapping[i] + excelIndex].v : null
+    if (value && value !== '-') {
+      if (i === 'pixelLocation' && sheet[coords['x']] && sheet[coords['y']]) {
+        copy['pixelLocation'] = getPixelLocation(sheet, excelIndex)
       } else {
-        copy[i] = val.v + ""
+        copy[i] = value + ""
       }
     }
   }
@@ -115,8 +115,13 @@ const updateCurrentElement = (updIdx, xlsxIdx, sheet, sheetName, json) => {
   let arrName = sheetMapping[sheetName].array
   for (let i in sample) {
     let value = sheet[colMapping[i] + xlsxIdx] ? sheet[colMapping[i] + xlsxIdx].v : null
-    if (value) {
-      json[arrName][jsonIdx][sheetName][updIdx][i] = value + ""
+    if (value && value !== '-') {
+      if (i === 'pixelLocation' && sheet[coords['x']] && sheet[coords['y']]) {
+          json[arrName][jsonIdx][sheetName][updIdx]['pixelLocation'] = getPixelLocation(sheet, excelIndex)
+        } else {
+          json[arrName][jsonIdx][sheetName][updIdx][i] = value + ""
+        }
+
     }
   }
 }

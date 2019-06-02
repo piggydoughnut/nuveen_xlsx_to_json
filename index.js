@@ -22,9 +22,9 @@ let areaMap = {}
  * @param  {Number} result    index in the graphs json array
  * @return {[type]}
  */
-const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
+const processYearNumberGraph = (jsonTitle, sheet, lookFor, result) => {
   logMe('---')
-  logMe('Processing GDP Graph for ' + lookFor)
+  logMe('Processing ' + jsonTitle + ' Graph for ' + lookFor)
   let gIndex = graphs.getIndexGDPGrowth(jsonTitle, result, currentJSON)
   logMe('Index of the graph ' + jsonTitle + ' in the GDPGrowth array: '  + gIndex)
   let info = gen.getRowsColumns(sheet)
@@ -166,12 +166,12 @@ const processGraphs = () => {
       currentJSON['graphs'][resIdx].graphAge = []
       processAgeGraph('graphAgeCity', graphs.sheets.graphAgeCity, city, resIdx)
       processAgeGraph('graphAgeCountry', graphs.sheets.graphAgeCountry, country, resIdx)
-      processGDPGraph('City Population', graphs.sheets.cityPopulation, city, resIdx)
-      processGDPGraph('Country Population', graphs.sheets.countryPopulation, country, resIdx)
-      processGDPGraph('Country GDP', graphs.sheets.countryGDP, country, resIdx)
-      processGDPGraph('City GDP', graphs.sheets.cityGDP, city, resIdx)
-      processGDPGraph('Country Retail Sales', graphs.sheets.countryRetailSales, country, resIdx)
-      processGDPGraph('City Retail Sales', graphs.sheets.cityRetailSales, city, resIdx)
+      processYearNumberGraph('City Population', graphs.sheets.cityPopulation, city, resIdx)
+      processYearNumberGraph('Country Population', graphs.sheets.countryPopulation, country, resIdx)
+      processYearNumberGraph('Country GDP', graphs.sheets.countryGDP, country, resIdx)
+      processYearNumberGraph('City GDP', graphs.sheets.cityGDP, city, resIdx)
+      processYearNumberGraph('Country Retail Sales', graphs.sheets.countryRetailSales, country, resIdx)
+      processYearNumberGraph('City Retail Sales', graphs.sheets.cityRetailSales, city, resIdx)
       processIncomeGraph(graphs.sheets.income, city, resIdx)
 
       currentJSON['graphs'][resIdx].graphGDPBreakdown.series1Label = city
