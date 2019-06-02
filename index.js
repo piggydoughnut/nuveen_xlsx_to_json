@@ -241,5 +241,6 @@ processCities()
 processGraphs()
 writetoJSON()
 
+console.log("\n\n\n")
 console.log('----Added new cities-----')
 console.log(newCities)
