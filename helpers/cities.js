@@ -40,15 +40,18 @@ const sheetMapping = {
 }
 
 const colMapping = {
-  'cities': {
-    'name': 'A',
-    'population':'B',
-    'populationGrowth':'C',
-    'population65':'D',
-    'spendingGrowth':'E'
-    // 'lifeScore':'8.5',
-    // 'technologyScore':'10'
-  }
+  'name': 'A',
+  'population':'B',
+  'populationGrowth':'C',
+  'population65':'D',
+  'spendingGrowth':'E',
+  'pixelLocation':'G'
+  // x = G, y = H
+}
+
+const coords = {
+  x: 'G',
+  y: 'H'
 }
 
 /**
@@ -74,16 +77,23 @@ const findInJSON = (jsonKey, field, value, json) => {
  * @param  {XLSX}   sheet       excel workbook
  * @return {Object}
  */
-const formNewElement = (map, excelIndex, sheet) => {
+const formNewElement = (excelIndex, sheet) => {
   let copy = Object.assign({}, sample)
   for (let i in sample) {
-    let val = sheet[map[i] + excelIndex]
+    let val = sheet[colMapping[i] + excelIndex]
     if (val) {
       if (val.v === '-') {
         logMe('Ignoring')
         return null
       }
-      copy[i] = val.v + ""
+      if (i === 'pixelLocation') {
+        copy['pixelLocation'] = {
+          x: sheet[coords['x'] + excelIndex].v + "",
+          y: sheet[coords['y'] + excelIndex].v + ""
+        }
+      } else {
+        copy[i] = val.v + ""
+      }
     }
   }
   return copy
@@ -100,12 +110,11 @@ const formNewElement = (map, excelIndex, sheet) => {
  * @return
  */
 const updateCurrentElement = (updIdx, xlsxIdx, sheet, sheetName, json) => {
-  let map = colMapping['cities']
   sheetName = sheetMap[sheetName]
   let jsonIdx = sheetMapping[sheetName].key
   let arrName = sheetMapping[sheetName].array
   for (let i in sample) {
-    let value = sheet[map[i] + xlsxIdx] ? sheet[map[i] + xlsxIdx].v : null
+    let value = sheet[colMapping[i] + xlsxIdx] ? sheet[colMapping[i] + xlsxIdx].v : null
     if (value) {
       json[arrName][jsonIdx][sheetName][updIdx][i] = value + ""
     }

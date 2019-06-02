@@ -7,10 +7,13 @@ const logMe = require('./helpers/settings').logMe
 const settings = require('./helpers/settings')
 const graphs = require('./helpers/graphs')
 
+let newCities = []
+
 const currentJSON = require(settings.ORIGINAL_JSON)
-var workbook = XLSX.readFile(settings.INPUT)
+const workbook = XLSX.readFile(settings.INPUT)
 const citiesSheetNames = ['Europe', 'Asia', 'Americas']
 let areaMap = {}
+
 /**
  * Gets data for the GDP graph
  * @param  {String} jsonTitle graph title in json, key
@@ -87,10 +90,12 @@ const processIncomeGraph = (sheet, lookFor, idx) => {
 const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
   logMe('---')
   logMe('Processing GDP Breakdown Graph for ' + lookFor)
+
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
   let i = 2 // starts at C
   let data = []
   let info = gen.getRowsColumns(sheet)
+
   while (i < info.ncols) {
     let alpha = graphs.numToAlpha(i)
     let value = sheet[alpha + tableRowIndex] ? sheet[alpha + tableRowIndex].v : null
@@ -106,12 +111,13 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
     }
     i++
   }
-  let label = graphs.labelMap[areaMap[lookFor]]
-  if (!currentJSON['graphs'][idx].graphGDPBreakdown) {
+
+  if (currentJSON['graphs'][idx].graphGDPBreakdown.seriesData.length === 0) {
     currentJSON['graphs'][idx].graphGDPBreakdown = {
       series1Label: lookFor.slice(0),
       seriesData: []
     }
+    let label = graphs.labelMap[areaMap[lookFor]]
     if (label) {
       currentJSON['graphs'][idx].graphGDPBreakdown.series2Label = label
     }
@@ -203,13 +209,14 @@ const processCities = () => {
       let indexInJson = ch.findInJSON(jsonKey, 'name', findBy, currentJSON)
       if (indexInJson === -1) {
         logMe('Element ' + findBy + ' does not exist')
-        let elem = ch.formNewElement(ch.colMapping['cities'], i, sheet)
+        let elem = ch.formNewElement(i, sheet)
         let idx = ch.sheetMapping[jsonKey].key
         let arrName = ch.sheetMapping[jsonKey].array
         if (elem) {
+          newCities.push(findBy)
           logMe('adding new element for ' + jsonKey + ' : ' + findBy)
           currentJSON[arrName][idx][jsonKey].push(elem)
-          let obj = graphs.makeNewGraphObject(findBy, jsonKey)
+          let obj = graphs.makeNewGraphObject(findBy)
           currentJSON['graphs'].push({...obj})
         }
       } else {
@@ -233,3 +240,6 @@ console.log('Lets parse')
 processCities()
 processGraphs()
 writetoJSON()
+
+console.log('----Added new cities-----')
+console.log(newCities)
