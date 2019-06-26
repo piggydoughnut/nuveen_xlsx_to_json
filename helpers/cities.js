@@ -89,7 +89,7 @@ const formNewElement = (excelIndex, sheet) => {
   for (let i in sample) {
     let value = sheet[colMapping[i] + excelIndex] ? sheet[colMapping[i] + excelIndex].v : null
     if (value && value !== '-') {
-      if (i === 'pixelLocation' && sheet[coords['x']] && sheet[coords['y']]) {
+      if (i === 'pixelLocation' && sheet[coords['x'] + excelIndex].v && sheet[coords['y'] + excelIndex].v) {
         copy['pixelLocation'] = getPixelLocation(sheet, excelIndex)
       } else {
         copy[i] = value + ""
