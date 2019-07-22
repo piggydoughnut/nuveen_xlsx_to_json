@@ -77,7 +77,7 @@ const numToAlpha = (num) => {
 }
 
 /**
- * Returns the index of the row for the given identified
+ * Returns the index of the row for the given identifier
  * @param  {XLSX}   sheet    excel Worksheet
  * @param  {String} tableKey city or country name
  * @return {Number}          index
@@ -130,16 +130,6 @@ const makeNewGraphObject = (city) => {
   let copy = Object.assign({}, sample)
   copy.name = city.slice(0)
   return copy
-}
-
-/**
- * Retuns an index which refers to the position of the graph in the graphGDPGrowth array
- * @param  {String} name   name of the graph we are looking for
- * @param  {Number} result index of the city we are working with in the graphs array
- * @return {Number}        index in array
- */
-const getIndexGDPGrowth = (name, result, json) => {
-  return _.findIndex(json['graphs'][result].graphGDPGrowth, (obj) => obj.name.toLowerCase() === name.toLowerCase())
 }
 
 module.exports = {
