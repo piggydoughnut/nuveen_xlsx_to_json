@@ -45,7 +45,8 @@ const colMapping = {
   'populationGrowth':'C',
   'population65':'D',
   'spendingGrowth':'E',
-  'pixelLocation':'G'
+  'pixelLocation':'G',
+  "marker": 'I'
   // x = G, y = H
 }
 
