@@ -27,7 +27,7 @@ const processYearNumberGraph = (jsonTitle, sheet, lookFor, result) => {
   logMe('Processing ' + jsonTitle + ' Graph for ' + lookFor)
   let info = gen.getRowsColumns(sheet)
 
-  let data = Object.assign({}, graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols))
+  let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
   if (!data) {
     return
   }
