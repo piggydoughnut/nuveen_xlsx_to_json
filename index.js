@@ -25,23 +25,17 @@ let areaMap = {}
 const processYearNumberGraph = (jsonTitle, sheet, lookFor, result) => {
   logMe('---')
   logMe('Processing ' + jsonTitle + ' Graph for ' + lookFor)
-  let gIndex = graphs.getIndexGDPGrowth(jsonTitle, result, currentJSON)
-  logMe('Index of the graph ' + jsonTitle + ' in the GDPGrowth array: '  + gIndex)
   let info = gen.getRowsColumns(sheet)
-  let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
+
+  let data = Object.assign({}, graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols))
   if (!data) {
     return
   }
-  if (gIndex !== -1) {
-    logMe('Updating existing graph of type ' + jsonTitle + ' in the GDPGrowth array')
-    currentJSON['graphs'][result].graphGDPGrowth[gIndex].data  = data
-  } else {
-    logMe('Adding a new graph of type ' + jsonTitle + ' to the GDPGrowth array')
-    currentJSON['graphs'][result].graphGDPGrowth.push({
-      data: data,
-      name: jsonTitle
-    })
-  }
+  logMe('Adding a graph of type ' + jsonTitle + ' to the GDPGrowth array')
+  currentJSON['graphs'][result].graphGDPGrowth.push({
+    data: data,
+    name: jsonTitle
+  })
 }
 
 /**
