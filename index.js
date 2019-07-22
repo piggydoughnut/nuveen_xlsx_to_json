@@ -33,8 +33,8 @@ const processYearNumberGraph = (jsonTitle, sheet, lookFor, result) => {
   }
   logMe('Adding a graph of type ' + jsonTitle + ' to the GDPGrowth array')
   currentJSON['graphs'][result].graphGDPGrowth.push({
-    data: data,
-    name: jsonTitle
+    name: jsonTitle,
+    data: data
   })
 }
 
@@ -160,6 +160,7 @@ const processGraphs = () => {
       currentJSON['graphs'][resIdx].graphAge = []
       processAgeGraph('graphAgeCity', graphs.sheets.graphAgeCity, city, resIdx)
       processAgeGraph('graphAgeCountry', graphs.sheets.graphAgeCountry, country, resIdx)
+      currentJSON['graphs'][resIdx].graphGDPGrowth = []
       processYearNumberGraph('City Population', graphs.sheets.cityPopulation, city, resIdx)
       processYearNumberGraph('Country Population', graphs.sheets.countryPopulation, country, resIdx)
       processYearNumberGraph('Country GDP', graphs.sheets.countryGDP, country, resIdx)

@@ -137,7 +137,6 @@ module.exports = {
   getTableKeyRowIndex,
   numToAlpha,
   sheets,
-  getIndexGDPGrowth,
   makeNewGraphObject,
   labelMap
 }
