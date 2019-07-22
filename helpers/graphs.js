@@ -4,6 +4,13 @@ const settings = require('./settings')
 const workbook = XLSX.readFile(settings.INPUT)
 const logMe = require('./settings').logMe
 
+/**
+ * Some countries or cities are named differently in different worksheet tabs
+ */
+const exceptions = {
+  'Hong Kong': 'Hong Kong, China'
+}
+
 const sheets = {
   graphAgeCity: workbook.Sheets['City age structure'],
   graphAgeCountry: workbook.Sheets['Country age structure'],
@@ -70,14 +77,7 @@ const numToAlpha = (num) => {
 }
 
 /**
- * Some countries or cities are named differently in different worksheet tabs
- */
-const exceptions = {
-  'Hong Kong': 'Hong Kong, China'
-}
-
-/**
- * Returns the index of the row for the given identified
+ * Returns the index of the row for the given identifier
  * @param  {XLSX}   sheet    excel Worksheet
  * @param  {String} tableKey city or country name
  * @return {Number}          index
@@ -121,19 +121,15 @@ const readDataSheet = (sheet, tableKey, rows, cols) => {
   return data
 }
 
-const makeNewGraphObject = (city, area) => {
+/**
+ * Creates a new graph object
+ * @param  {String} city name of the city
+ * @return {Object}      copy of the sample object
+ */
+const makeNewGraphObject = (city) => {
   let copy = Object.assign({}, sample)
   copy.name = city.slice(0)
   return copy
-}
-/**
- * Retuns an index which refers to the position of the graph in the graphGDPGrowth array
- * @param  {String} name   name of the graph we are looking for
- * @param  {Number} result index of the city we are working with in the graphs array
- * @return {Number}        index in array
- */
-const getIndexGDPGrowth = (name, result, json) => {
-  return _.findIndex(json['graphs'][result].graphGDPGrowth, (obj) => obj.name.toLowerCase() === name.toLowerCase())
 }
 
 module.exports = {
@@ -141,7 +137,6 @@ module.exports = {
   getTableKeyRowIndex,
   numToAlpha,
   sheets,
-  getIndexGDPGrowth,
   makeNewGraphObject,
   labelMap
 }

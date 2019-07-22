@@ -13,6 +13,11 @@ const getRowsColumns = (sheet) => {
   return {nrows, ncols}
 }
 
+/**
+ * getAllCities
+ * @param  {XLSX} workbook
+ * @return {[{}]}          array of objects { cityName: countryName }
+ */
 const getAllCities = (workbook) => {
   let cityPopSheet = workbook.Sheets['City pop']
   let {nrows, ncols} = getRowsColumns(cityPopSheet)

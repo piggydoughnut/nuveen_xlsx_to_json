@@ -7,10 +7,13 @@ const logMe = require('./helpers/settings').logMe
 const settings = require('./helpers/settings')
 const graphs = require('./helpers/graphs')
 
+let newCities = []
+
 const currentJSON = require(settings.ORIGINAL_JSON)
-var workbook = XLSX.readFile(settings.INPUT)
+const workbook = XLSX.readFile(settings.INPUT)
 const citiesSheetNames = ['Europe', 'Asia', 'Americas']
 let areaMap = {}
+
 /**
  * Gets data for the GDP graph
  * @param  {String} jsonTitle graph title in json, key
@@ -19,26 +22,20 @@ let areaMap = {}
  * @param  {Number} result    index in the graphs json array
  * @return {[type]}
  */
-const processGDPGraph = (jsonTitle, sheet, lookFor, result) => {
+const processYearNumberGraph = (jsonTitle, sheet, lookFor, result) => {
   logMe('---')
-  logMe('Processing GDP Graph for ' + lookFor)
-  let gIndex = graphs.getIndexGDPGrowth(jsonTitle, result, currentJSON)
-  logMe('Index of the graph ' + jsonTitle + ' in the GDPGrowth array: '  + gIndex)
+  logMe('Processing ' + jsonTitle + ' Graph for ' + lookFor)
   let info = gen.getRowsColumns(sheet)
-  let data = graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols)
+
+  let data = Object.assign({}, graphs.readDataSheet(sheet, lookFor, info.nrows, info.ncols))
   if (!data) {
     return
   }
-  if (gIndex !== -1) {
-    logMe('Updating existing graph of type ' + jsonTitle + ' in the GDPGrowth array')
-    currentJSON['graphs'][result].graphGDPGrowth[gIndex].data  = data
-  } else {
-    logMe('Adding a new graph of type ' + jsonTitle + ' to the GDPGrowth array')
-    currentJSON['graphs'][result].graphGDPGrowth.push({
-      data: data,
-      name: jsonTitle
-    })
-  }
+  logMe('Adding a graph of type ' + jsonTitle + ' to the GDPGrowth array')
+  currentJSON['graphs'][result].graphGDPGrowth.push({
+    name: jsonTitle,
+    data: data
+  })
 }
 
 /**
@@ -87,10 +84,12 @@ const processIncomeGraph = (sheet, lookFor, idx) => {
 const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
   logMe('---')
   logMe('Processing GDP Breakdown Graph for ' + lookFor)
+
   let tableRowIndex = graphs.getTableKeyRowIndex(sheet, lookFor)
   let i = 2 // starts at C
   let data = []
   let info = gen.getRowsColumns(sheet)
+
   while (i < info.ncols) {
     let alpha = graphs.numToAlpha(i)
     let value = sheet[alpha + tableRowIndex] ? sheet[alpha + tableRowIndex].v : null
@@ -106,12 +105,13 @@ const processGDPBreakdownGraph = (sheet, lookFor, idx) => {
     }
     i++
   }
-  let label = graphs.labelMap[areaMap[lookFor]]
-  if (!currentJSON['graphs'][idx].graphGDPBreakdown) {
+
+  if (currentJSON['graphs'][idx].graphGDPBreakdown.seriesData.length === 0) {
     currentJSON['graphs'][idx].graphGDPBreakdown = {
       series1Label: lookFor.slice(0),
       seriesData: []
     }
+    let label = graphs.labelMap[areaMap[lookFor]]
     if (label) {
       currentJSON['graphs'][idx].graphGDPBreakdown.series2Label = label
     }
@@ -160,12 +160,13 @@ const processGraphs = () => {
       currentJSON['graphs'][resIdx].graphAge = []
       processAgeGraph('graphAgeCity', graphs.sheets.graphAgeCity, city, resIdx)
       processAgeGraph('graphAgeCountry', graphs.sheets.graphAgeCountry, country, resIdx)
-      processGDPGraph('City Population', graphs.sheets.cityPopulation, city, resIdx)
-      processGDPGraph('Country Population', graphs.sheets.countryPopulation, country, resIdx)
-      processGDPGraph('Country GDP', graphs.sheets.countryGDP, country, resIdx)
-      processGDPGraph('City GDP', graphs.sheets.cityGDP, city, resIdx)
-      processGDPGraph('Country Retail Sales', graphs.sheets.countryRetailSales, country, resIdx)
-      processGDPGraph('City Retail Sales', graphs.sheets.cityRetailSales, city, resIdx)
+      currentJSON['graphs'][resIdx].graphGDPGrowth = []
+      processYearNumberGraph('City Population', graphs.sheets.cityPopulation, city, resIdx)
+      processYearNumberGraph('Country Population', graphs.sheets.countryPopulation, country, resIdx)
+      processYearNumberGraph('Country GDP', graphs.sheets.countryGDP, country, resIdx)
+      processYearNumberGraph('City GDP', graphs.sheets.cityGDP, city, resIdx)
+      processYearNumberGraph('Country Retail Sales', graphs.sheets.countryRetailSales, country, resIdx)
+      processYearNumberGraph('City Retail Sales', graphs.sheets.cityRetailSales, city, resIdx)
       processIncomeGraph(graphs.sheets.income, city, resIdx)
 
       currentJSON['graphs'][resIdx].graphGDPBreakdown.series1Label = city
@@ -203,13 +204,14 @@ const processCities = () => {
       let indexInJson = ch.findInJSON(jsonKey, 'name', findBy, currentJSON)
       if (indexInJson === -1) {
         logMe('Element ' + findBy + ' does not exist')
-        let elem = ch.formNewElement(ch.colMapping['cities'], i, sheet)
+        let elem = ch.formNewElement(i, sheet)
         let idx = ch.sheetMapping[jsonKey].key
         let arrName = ch.sheetMapping[jsonKey].array
         if (elem) {
+          newCities.push(findBy)
           logMe('adding new element for ' + jsonKey + ' : ' + findBy)
           currentJSON[arrName][idx][jsonKey].push(elem)
-          let obj = graphs.makeNewGraphObject(findBy, jsonKey)
+          let obj = graphs.makeNewGraphObject(findBy)
           currentJSON['graphs'].push({...obj})
         }
       } else {
@@ -233,3 +235,7 @@ console.log('Lets parse')
 processCities()
 processGraphs()
 writetoJSON()
+
+console.log("\n\n\n")
+console.log('----Added new cities-----')
+console.log(newCities)
