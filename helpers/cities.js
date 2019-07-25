@@ -16,12 +16,12 @@ const sample = {
     "x": "0",
     "y": "0"
   },
-  "population": "",
-  "lifeScore": "",
-  "technologyScore": "",
-  "population65": "",
-  "populationGrowth": "",
-  "spendingGrowth": ""
+  "population": "0",
+  "lifeScore": "0",
+  "technologyScore": "0",
+  "population65": "0",
+  "populationGrowth": "0",
+  "spendingGrowth": "0"
 }
 
 const sheetMapping = {
