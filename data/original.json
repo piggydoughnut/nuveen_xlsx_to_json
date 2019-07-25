@@ -17,20 +17,6 @@
 					"populationGrowth": "10",
 					"spendingGrowth": "22.5"},
 				{
-					"name": "Ankara",
-					"marker":"",
-					"video":"",
-					"type": "1750",
-					"pixelLocation": {
-						"x":"6449",
-						"y":"-1750"},
-					"population": "4.6",
-					"lifeScore": "4.5",
-					"technologyScore": "1.7",
-					"population65":"89.4",
-					"populationGrowth": "24.9",
-					"spendingGrowth": "142.6"},
-				{
 					"name": "Antwerp",
 					"marker":"",
 					"video":"",
@@ -87,20 +73,6 @@
 					"populationGrowth": "17",
 					"spendingGrowth": "32.3"},
 				{
-					"name": "Bristol",
-					"marker":"left",
-					"video":"7SoMSyY0cD9",
-					"type": "1283",
-					"pixelLocation": {
-						"x":"5309",
-						"y":"-1283"},
-					"population": "1.1",
-					"lifeScore": "7.3",
-					"technologyScore": "6.4",
-					"population65":"78.1",
-					"populationGrowth": "10.7",
-					"spendingGrowth": "80.3"},
-				{
 					"name": "Brussels",
 					"marker":"left",
 					"video":"",
@@ -114,20 +86,6 @@
 					"population65":"79",
 					"populationGrowth": "9.3",
 					"spendingGrowth": "37.7"},
-				{
-					"name": "Bucharest",
-					"marker":"left",
-					"video":"",
-					"type": "1580",
-					"pixelLocation": {
-						"x":"6202",
-						"y":"-1580"},
-					"population": "2",
-					"lifeScore": "1.9",
-					"technologyScore": "2",
-					"population65":"79.2",
-					"populationGrowth": "-4.3",
-					"spendingGrowth": "79.5"},
 				{
 					"name": "Budapest",
 					"marker":"",
@@ -395,20 +353,6 @@
 					"populationGrowth": "6.8",
 					"spendingGrowth": "12.3"},
 				{
-					"name": "Sofia",
-					"marker":"",
-					"video":"",
-					"type": "1624",
-					"pixelLocation": {
-						"x":"6146",
-						"y":"-1624"},
-					"population": "1.3",
-					"lifeScore": "1.7",
-					"technologyScore": "2.5",
-					"population65":"77",
-					"populationGrowth": "5.5",
-					"spendingGrowth": "142.5"},
-				{
 					"name": "Stockholm",
 					"marker":"",
 					"video":"w7ngi8s9DFV",
@@ -442,8 +386,8 @@
 					"video":"",
 					"type": "1272",
 					"pixelLocation": {
-						"x":"5515",
-						"y":"-1272"},
+						"x": "5515",
+						"y": "-1272"},
 					"population": "0.8",
 					"lifeScore": "7.5",
 					"technologyScore": "8.7",
@@ -542,7 +486,7 @@
 				{"name": "Beijing" , "marker":"left", "video":"", "type": "", "pixelLocation": {"x":"9318", "y":"-1762"}, "population": "25.15", "lifeScore": "-", "technologyScore": "-", "population65":"82.7", "populationGrowth": "6.5", "spendingGrowth": "56.6"},
 				{"name": "Guangzhou" , "marker":"left", "video":"", "type": "", "pixelLocation": {"x":"9379", "y":"-2437"}, "population": "14.28", "lifeScore": "-", "technologyScore": "-", "population65":"89.4", "populationGrowth": "7.2", "spendingGrowth": "56.1"},
 				{"name": "Shenzhen" , "marker":"", "video":"", "type": "", "pixelLocation": {"x":"9411", "y":"-2476"}, "population": "11.87", "lifeScore": "-", "technologyScore": "-", "population65":"89.4", "populationGrowth": "7", "spendingGrowth": "55.8"},
-				{"name": "Nagoya" , "marker":"", "video":"", "type": "", "pixelLocation": {"x":"10067", "y":"-1953"}, "population": "9.07", "lifeScore": "-", "technologyScore": "-", "population65":"70.5", "populationGrowth": "0.7", "spendingGrowth": "13.6"},
+				{"name": "Nagoya" , "marker":"", "video":"", "type": "", "pixelLocation": {"x":"10067", "y":"-1953"}, "population": "9.07", "lifeScore": "-", "technologyScore": "-", "population65":"70.5", "populationGrowth": "0", "spendingGrowth": "13.6"},
 				{"name": "Singapore" , "marker":"", "video":"", "type": "", "pixelLocation": {"x":"9122", "y":"-3353"}, "population": "5.62", "lifeScore": "-", "technologyScore": "-", "population65":"76.7", "populationGrowth": "3.2", "spendingGrowth": "34.8"},
 				{"name": "Sydney" , "marker":"", "video":"", "type": "", "pixelLocation": {"x":"10594", "y":"-4794"}, "population": "5.85", "lifeScore": "-", "technologyScore": "-", "population65":"83.4", "populationGrowth": "2", "spendingGrowth": "26.5"},
 				{"name": "Seoul" , "marker":"", "video":"", "type": "", "pixelLocation": {"x":"9674", "y":"-1848"}, "population": "9.76", "lifeScore": "-", "technologyScore": "-", "population65":"76.8", "populationGrowth": "2.7", "spendingGrowth": "21.2"},
@@ -10563,12 +10507,12 @@
 	}],
 	"uiLabels":
 	{
-		"population": "Total population in the metropolitan area of a city, sourced from Oxford Economics, 2014.",
+		"population": "Total population in the metropolitan area of a city, sourced from Oxford Economics, 2018.",
 		"lifeScore":"Relative quality of life, formed from various indices such as housing, medical and health considerations, crime, education, and natural, political and social environment, into one comprehensive score, sourced from the Economist, Mercer and Euromonitor, 2014. 10 represents the highest.",
 		"technologyScore":"Measured by a city’s adoption of technology, e.g. Number of start-ups from the Tech Crunch database, % of internet users of the total population from Oxford Economics, 2014, and measure of innovation from 2thinknow – the 2014 Innovation Cities Index. 10 represents the highest.",
-		"population65": "The economically active working age population is defined as being between 15-65 years old. The data is based on Oxford Economics forecasts.",
-		"populationGrowth": "Total population change from 2010 to 2030 in %, sourced from Oxford Economics, 2014.",
-		"spendingGrowth": "Discretionary spending is a good measure to capture the growing affluence of a city. The data is based on estimates from Oxford Economics, 2014."
+		"population65": "Millennials are defined as those aged between 15-35. The data is based on Oxford Economics forecasts.",
+		"populationGrowth": "Total population change from 2010 to 2030 in %, sourced from Oxford Economics, 2018.",
+		"spendingGrowth": "Recreation and leisure spending is a good measure of discretionary spending, based on estimates from Oxford Economics, 2018."
 	}
 
 }

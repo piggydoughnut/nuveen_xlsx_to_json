@@ -26,9 +26,9 @@ const sheets = {
 }
 
 const labelMap = {
-  'Europe': 'European cities average',
-  'Americas': '',
-  'Asia': 'Asia-Pacific cities average'
+  'Europe': 'Country average',
+  'Americas': 'Country average',
+  'Asia': 'Country average'
 }
 
 const sample = {
